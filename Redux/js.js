@@ -14,7 +14,7 @@
 //     dispatch(action) {
 //       state = reducer(state, action);
 
-//       state.forEach((i) => i());
+//       st.forEach((i) => i());
 //     },
 //     subscribe(item) {
 //       st.push(item);
@@ -78,86 +78,73 @@
 
 // render();
 
-function createStore(reducer) {
-  let state = reducer(undefined, {});
+function createStore(re) {
+  let state = re(undefined, {});
 
-  let f = [];
-
+  const t = [];
   return {
     getState() {
+      console.log("Get state" + state);
       return state;
     },
     dispatch(action) {
-      state = reducer(state, action);
-
-      f.forEach((e) => e());
+      state = re(state, action);
+      t.forEach((a) => a());
     },
-    subscribe(funcs) {
-      f.push(funcs);
+    subscribe(fuc) {
+      t.push(fuc);
     },
   };
 }
 
 const init = 0;
 
-function reducer(state = init, action) {
+const reducer = (state = init, action) => {
   switch (action.type) {
-    case "DEPOSIT":
+    case "INCREASE":
       return state + action.payload;
-    case "WITHDRAW":
+    case "DECREASE":
       return state - action.payload;
     default:
       return state;
   }
-}
+};
 
-const state = createStore(reducer);
+const store = createStore(reducer);
 
-// function actiondepositAmount(amount) {
-//   return {
-//     type: "DEPOSIT",
-//     payload: amount,
-//   };
-// }
-
-const actiondepositAmount = (amount) => {
+const actionIncrease = (data) => {
   return {
-    type: "DEPOSIT",
-    payload: amount,
+    type: "INCREASE",
+    payload: data,
   };
 };
 
-function actionwithdrawAmount(amount) {
+const actionDecrease = (data) => {
   return {
-    type: "WITHDRAW",
-    payload: amount,
+    type: "DECREASE",
+    payload: data,
   };
-}
-
-const actionDeposit = document.querySelector("#deposit");
-actionDeposit.onclick = () => {
-  state.dispatch(actiondepositAmount(10));
 };
 
-const actionWithdraw = document.querySelector("#withdraw");
-actionWithdraw.onclick = () => {
-  state.dispatch(actionwithdrawAmount(10));
+const b_in = document.querySelector("#deposit");
+
+b_in.onclick = () => {
+  store.dispatch(actionIncrease(10));
 };
 
-state.subscribe(() => render());
+const b_out = document.querySelector("#withdraw");
+
+b_out.onclick = () => {
+  store.dispatch(actionDecrease(10));
+};
+
+store.subscribe(() => {
+  render();
+});
 
 function render() {
-  const s = document.querySelector("#quantity");
-  s.innerText = state.getState();
+  const f = document.querySelector("#quantity");
+  f.innerText = store.getState();
 }
 
 render();
-
-function test() {
-  return {
-    name: "Ha",
-    amount: 5,
-  };
-}
-
-console.log(test);
